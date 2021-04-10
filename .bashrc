@@ -2,7 +2,7 @@
 
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$HOME/.poetry/bin:$PATH"
-# export PATH="$PATH:$HOME/.cargo/bin"
+export PATH="$PATH:$HOME/.cargo/bin"
 # source $HOME/.cargo/env
 
 # avoid duplicates

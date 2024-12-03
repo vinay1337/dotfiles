@@ -1,108 +1,137 @@
-# .bashrc
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
 
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="$HOME/.poetry/bin:$PATH"
-export PATH="$PATH:$HOME/.cargo/bin"
-# source $HOME/.cargo/env
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
 
-# avoid duplicates
-export HISTCONTROL=ignoredups:erasedups
-# append history entries
-#shopt -s histappend
-# after each command, save and reload history
-# export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-export HISTFILESIZE=100000
-export HISTSIZE=5000
+# don't put duplicate lines in the history. See bash(1) for more options
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoredups:ignorespace
 
-#set (n)vim as default editor
-export EDITOR=/usr/bin/nvim
-export VISUAL=/usr/bin/nvim
+# append to the history file, don't overwrite it
+shopt -s histappend
 
-export TERM=xterm-256color
-# export CLICOLOR=1
-# export GREP_OPTIONS='--color=auto' # dep
-# alias grep="grep --color=auto"
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=5000
+HISTFILESIZE=10000
 
-eval `dircolors ~/.dir_colors`
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
-# export LSCOLORS="ExGxBxDxCxEgEdxbxgxcxd"
-# export LSCOLORS="exfxcxdxbxegedabagacad" #default?
-# export LSCOLORS=Exfxcxdxbxegedabagacad
-# export LSCOLORS=gxfxcxdxbxegedabagacad
-# Don't put duplicate lines in your bash history
-# export HISTCONTROL=ignoredups
-# increase history limit (100KB or 5K entries)
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-bind 'set show-all-if-ambiguous on'
-bind 'set colored-completion-prefix on'
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
 
-# *** DOCPROMPT ENV SETUP ***
-# export PATH=$PATH:$PWD/tools/ant/bin/
-# export ANT_ARGS='-find build.xml'
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color) color_prompt=yes;;
+esac
 
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
 
-### NNN settings ###
-n ()
-{
-    # Block nesting of nnn in subshells
-    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
-        echo "nnn is already running"
-        return
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
     fi
+fi
 
-    # The default behaviour is to cd on quit (nnn checks if NNN_TMPFILE is set)
-    # To cd on quit only on ^G, remove the "export" as in:
-    #     NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-    # NOTE: NNN_TMPFILE is fixed, should not be modified
-    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+unset color_prompt force_color_prompt
 
-    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
-    # stty start undef
-    # stty stop undef
-    # stty lwrap undef
-    # stty lnext undef
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
 
-    nnn "$@"
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
-    if [ -f "$NNN_TMPFILE" ]; then
-            . "$NNN_TMPFILE"
-            rm -f "$NNN_TMPFILE" > /dev/null
-    fi
-}
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
 
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-#---------#
-# ALIASES #
-#---------#
-alias vim='nvim'
-alias rm='rm -i'
-# alias cp='cp -i'
-alias mv='mv -i'
-# Prevents accidentally nuking files
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-alias mkdir='mkdir -p'
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
-alias h='history'
-alias j='jobs -l'
-alias ..='cd ..'
+if [ -f ~/.bash_profile ]; then
+    . ~/.bash_profile
+fi
 
-# The 'ls' family
-alias ls='ls -h --color=auto'
-alias ll='ls -lv --group-directories-first'
-alias lm='ll | less'
-alias la='ll -A'
-alias d='ll -A'
-alias tree='tree -Csuh'
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
 
-alias gts='git status'
-alias gtl='git log'
+##### MY ADDITIONS #####
 
-alias bashrc='vim ~/.bashrc && source ~/.bashrc'
-alias vimrc='vim ~/.vimrc'
-# alias rpi='telnet rpi-11a087 2001'
-alias SSH='ssh root@rpi-47536d'
+## nnn (terminal file manager) settings - https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
+#n ()
+#{
+#    # Block nesting of nnn in subshells
+#    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+#        echo "nnn is already running"
+#        return
+#    fi
+#
+#    # The default behaviour is to cd on quit (nnn checks if NNN_TMPFILE is set)
+#    # To cd on quit only on ^G, remove the "export" as in:
+#    #     NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+#    # NOTE: NNN_TMPFILE is fixed, should not be modified
+#    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+#
+#    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+#    # stty start undef
+#    # stty stop undef
+#    # stty lwrap undef
+#    # stty lnext undef
+#
+#    nnn "$@"
+#
+#    if [ -f "$NNN_TMPFILE" ]; then
+#            . "$NNN_TMPFILE"
+#            rm -f "$NNN_TMPFILE" > /dev/null
+#    fi
+#}
 
+# Color shortcuts
 nc='\[\e[0m\]' # no color/text reset
 # regular colors
 blk='\[\e[0;30m\]'
@@ -142,9 +171,31 @@ bakcyn='\[\e[46m\]'
 bakwht='\[\e[47m\]'
 
 
-##### PROMPT #####
+##### BFApps #####
+
+export XES_USERNAME="vjanardhanam"
+export XES_PASSWORD="$(base64 --decode /home/vjanardhanam/.auth)"
+
+##### CUSTOM SCRIPTS #####
+
+xtelnet() {
+    local host="$1"
+    local port="$2"
+    
+    if [ -z "$host" ] || [ -z "$port" ]; then
+        echo "Usage: xtelnet <hostname> <port>"
+        return 1
+    fi
+    
+    while true; do
+        reset
+        telnet "$host" "$port"
+        sleep 2
+    done
+}
 
 
+##### CUSTOM SHELL PROMPT #####
 
 function parse_git_dirty {
   git diff --quiet HEAD &>/dev/null
@@ -168,6 +219,7 @@ function virtualenv_info(){
     fi
     [[ -n "$venv" ]] && echo "venv:$venv "
 }
+
 # disable the default virtualenv prompt change
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 VENV="\$(virtualenv_info)";
@@ -362,3 +414,7 @@ __git_ps1 ()
 
 # PS1="${boldblue}[\A] ${boldgreen}\w ${boldcyan}${VENV}${boldyellow}${GIT}\n${purple}>> ${nc}"
 PS1="${blu}[\A] ${grn}\w ${cyn}${VENV}${ylw}${GIT}\n${pur}>> ${nc}"
+
+export TERM=xterm-256color
+bind 'set show-all-if-ambiguous on'
+bind 'set colored-completion-prefix on'

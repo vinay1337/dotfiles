@@ -1,0 +1,145 @@
+{
+    "window.titleBarStyle": "custom",
+    "workbench.iconTheme": "Monokai Pro Icons",
+    "editor.lineNumbers": "relative",
+    "editor.rulers": [
+        80, 140
+    ],
+    // vim settings
+    "vim.easymotion": true,
+    "vim.incsearch": true,
+    "vim.useSystemClipboard": true,
+    "vim.useCtrlKeys": true,
+    "vim.hlsearch": true,
+    "vim.ignorecase": true,
+    "vim.insertModeKeyBindings": [
+      {
+        "before": ["j", "j"],
+        "after": ["<Esc>"]
+      }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+      {
+        "before": ["<C-n>"],
+        "commands": [":nohl"]
+      }
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+    {
+      "before": [">"],
+      "commands": ["editor.action.indentLines"]
+    },
+    {
+      "before": ["<"],
+      "commands": ["editor.action.outdentLines"]
+    },
+    {
+      "before": ["p"],
+      "after": ["p", "g", "v", "y"]
+    }
+    ],
+    "vim.leader": "<space>",
+    "vim.handleKeys": {
+      "<C-a>": false,
+      "<C-c>": false,
+      "<C-f>": false,
+      "<C-k>": false,
+      "<C-p>": false,
+      "<C-s>": false,
+      "<C-v>": false,
+      "<C-x>": false,
+      "<C-y>": false,
+      "<C-z>": false
+    },
+    "vim.highlightedyank.enable": true,
+    "vim.sneak": true,
+    "vim.sneakUseIgnorecaseAndSmartcase": true,
+    // vim color settings
+    "vim.statusBarColorControl": true,
+    "vim.statusBarColors.normal": ["#191E2A", "#FFF"],
+    "vim.statusBarColors.insert": ["#ffa759", "#000"],
+    "vim.statusBarColors.visual": ["#75a8d9", "#000"],
+    "vim.statusBarColors.visualline": ["#5ccfe6", "#000"],
+    "vim.statusBarColors.visualblock": ["#d4bfff", "#000"],
+    "vim.statusBarColors.replace": ["#f28779", "#000"],
+    "vim.statusBarColors.commandlineinprogress": ["#bae67e", "#000"],
+    "vim.statusBarColors.searchinprogressmode": ["#bae67e", "#000"],
+    "vim.statusBarColors.easymotionmode": ["#bae67e", "#000"],
+    "vim.statusBarColors.easymotioninputmode": ["#bae67e", "#000"],
+    "vim.statusBarColors.surroundinputmode": ["#bae67e", "#000"],
+    "vim.searchHighlightColor": "#707a8c",
+    "workbench.colorCustomizations": {
+      "statusBar.background": "#191E2A",
+      "statusBar.noFolderBackground": "#191E2A",
+      "statusBar.debuggingBackground": "#191E2A",
+      "statusBar.foreground": "#FFF",
+      "statusBar.debuggingForeground": "#FFF"
+    },
+    // other setings
+    "git.terminalAuthentication": false,
+    "files.exclude": {
+      "**/*.pyc": {"when": "$(basename).py"}, 
+      "**/__pycache__": true
+    },
+    "python.languageServer": "Pylance",
+    "workbench.editorAssociations": {
+      "*.ipynb": "jupyter-notebook",
+      "*.db": "sqlite-viewer.option"
+    },
+    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "notebook.cellToolbarLocation": {
+      "default": "right",
+      "jupyter-notebook": "left"
+    },
+    "gitlens.hovers.currentLine.over": "line",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "editor.minimap.showSlider": "always",
+    "editor.minimap.maxColumn": 80,
+    "explorer.confirmDelete": false,
+    "terminal.integrated.scrollback": 10000,
+    "terminal.integrated.allowChords": false,
+    "editor.stickyScroll.enabled": true,
+    "[python]": {
+      "editor.formatOnType": true
+    },
+    "actionButtons": {
+      "defaultColor": "white",
+      "loadNpmCommands":false,
+      "commands": [
+          {
+              "name": "Toggle Outlet 7",
+              "singleInstance": true,
+              "command": "state=$(curl -su admin:xes ENG-WPS-40/status | grep -oP '(?<=state\\\">)[0-9a-f]{2}'); test $((0x$state & 0x40)) -ne 0 && curl -su admin:xes ENG-WPS-40/outlet?7=OFF || curl -su admin:xes ENG-WPS-40/outlet?7=ON; exit"
+          },
+          {
+              "name": "Toggle Outlet 8",
+              "singleInstance": true,
+              "command": "state=$(curl -su admin:xes ENG-WPS-40/status | grep -oP '(?<=state\\\">)[0-9a-f]{2}'); test $((0x$state & 0x80)) -ne 0 && curl -su admin:xes ENG-WPS-40/outlet?8=OFF || curl -su admin:xes ENG-WPS-40/outlet?8=ON; exit"
+          },
+          {
+              "name": "Format: Black",
+              "singleInstance": true,
+              "command": "poetry run pre-commit run -a black; exit 0"
+          }
+      ]
+    },
+    "python.analysis.stubPath": "stubs",
+    "workbench.colorTheme": "Ayu Mirage",
+    "github.copilot.editor.enableAutoCompletions": true,
+    "explorer.fileNesting.patterns": {
+      "*.ts": "${capture}.js",
+      "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+      "*.jsx": "${capture}.js",
+      "*.tsx": "${capture}.ts",
+      "tsconfig.json": "tsconfig.*.json",
+      "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb",
+      "*.sqlite": "${capture}.${extname}-*",
+      "*.db": "${capture}.${extname}-*",
+      "*.sqlite3": "${capture}.${extname}-*",
+      "*.db3": "${capture}.${extname}-*",
+      "*.sdb": "${capture}.${extname}-*",
+      "*.s3db": "${capture}.${extname}-*"
+    },
+    "robot.language-server.python": "${workspaceFolder}/.venv/bin/python3"
+}
